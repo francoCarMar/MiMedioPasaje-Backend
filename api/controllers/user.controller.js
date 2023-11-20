@@ -99,9 +99,22 @@ const verifyCode = async ({ usrEma, usrValCod }) => {
   }
 };
 
+const getUser = async ({ usrEma }) => {
+  try {
+    const user = await User.findOne({ where: { usrEma: usrEma } });
+    if (!user) {
+      throw new Error("User not found");
+    }
+    return { user: user };
+  } catch (e) {
+    return { message: "error al buscar el usuario", error: e };
+  }
+};
+
 module.exports = {
   createUser,
   login,
   verifyCode,
   changePassword,
+  getUser,
 };

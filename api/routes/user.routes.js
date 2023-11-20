@@ -1,5 +1,6 @@
 const express = require("express");
 const { UserController } = require("../controllers/index.js");
+const User = require("../models/user.model.js");
 
 const router = express.Router();
 
@@ -27,6 +28,13 @@ router.post("/verify", (req, res) => {
 router.post("/generateCode", (req, res) => {
   const code = Math.floor(Math.random() * 1000000);
   res.json({ code });
+});
+
+router.post("/getUser", (req, res) => {
+  const { usrEma } = req.body;
+  UserController.getUser({ usrEma })
+    .then((result) => res.json(result))
+    .catch((err) => res.status(500).json(err));
 });
 
 module.exports = router;
