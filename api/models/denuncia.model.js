@@ -33,7 +33,7 @@ const Denuncia = sequelize.define(
       allowNull: false,
     },
     denEvi: {
-      type: Sequelize.BLOB("medium"),
+      type: Sequelize.STRING,
       allowNull: true,
     },
   },
