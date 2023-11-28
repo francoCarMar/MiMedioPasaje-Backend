@@ -45,10 +45,14 @@ const sendDenunciaEmail = async (
     from: process.env.EMAIL_USER,
     to: process.env.EMAIL_COMPLAINT,
     subject: "Denuncia Medio Pasaje",
-    text: `El usuario ${usrNom} ${usrApe} con DNI ${usrDNI} 
-    ha realizado una denuncia por el medio de transporte ${denMovPla} 
-    con razón social ${denRazSoc} el día ${denFec} a las ${denHor} 
-    adjuntando la siguiente evidencia: ${denEvi}`,
+    text: `
+    El usuario ${usrNom} ${usrApe} con DNI ${usrDNI} ha realizado una denuncia.
+    Medio de transporte: ${denMovPla}
+    Razón social: ${denRazSoc}
+    Fecha: ${denFec}
+    Hora: ${denHor}
+    Evidencia: ${denEvi}
+    `.trim(),
   };
 
   try {
