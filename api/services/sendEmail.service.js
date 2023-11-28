@@ -1,14 +1,18 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 
-const sendConfirmationEmail = async (email, usrValCod) => {
-  const transporter = nodemailer.createTransport({
+const createTransporter = () => {
+  return nodemailer.createTransport({
     service: "gmail",
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
   });
+};
+
+const sendConfirmationEmail = async (email, usrValCod) => {
+  const transporter = createTransporter();
 
   const mailOptions = {
     from: process.env.EMAIL_USER,
@@ -25,4 +29,34 @@ const sendConfirmationEmail = async (email, usrValCod) => {
   }
 };
 
-module.exports = { sendConfirmationEmail };
+const sendDenunciaEmail = async (
+  usrDNI,
+  usrNom,
+  usrApe,
+  denRazSoc,
+  denMovPla,
+  denFec,
+  denHor,
+  denEvi
+) => {
+  const transporter = createTransporter();
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: process.env.EMAIL_COMPLAINT,
+    subject: "Denuncia Medio Pasaje",
+    text: `El usuario ${usrNom} ${usrApe} con DNI ${usrDNI} 
+    ha realizado una denuncia por el medio de transporte ${denMovPla} 
+    con razón social ${denRazSoc} el día ${denFec} a las ${denHor} 
+    adjuntando la siguiente evidencia: ${denEvi}`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("Denuncia Realizada");
+  } catch (error) {
+    console.error("Hubo un error al enviar el correo de confirmación: ", error);
+  }
+};
+
+module.exports = { sendConfirmationEmail, sendDenunciaEmail };

@@ -16,6 +16,14 @@ const Denuncia = sequelize.define(
       foreignKey: true,
       allowNull: false,
     },
+    usrNom: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    usrApe: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
     denRazSoc: {
       type: Sequelize.STRING,
       allowNull: true,
