@@ -44,6 +44,11 @@ const Denuncia = sequelize.define(
       type: Sequelize.STRING,
       allowNull: true,
     },
+    denEst: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 1,
+    },
   },
   {
     tableName: "denuncia",
