@@ -56,10 +56,12 @@ const sendDenunciaEmail = async (
   };
 
   try {
-    await transporter.sendMail(mailOptions);
+    const info = await transporter.sendMail(mailOptions);
     console.log("Denuncia Realizada");
+    return { denCod: info.messageId };
   } catch (error) {
     console.error("Hubo un error al enviar el correo de confirmación: ", error);
+    return { message: "error al enviar denuncia", error: error };
   }
 };
 
