@@ -33,7 +33,6 @@ const denunciar = async ({
       denHor,
       denEvi,
     });
-
     return { message: "denuncia creada", denuncia: newDenuncia };
   } catch (e) {
     return { message: "error al crear denuncia", error: e };
