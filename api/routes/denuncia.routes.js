@@ -1,6 +1,6 @@
 const express = require("express");
 const { DenunciaController } = require("../controllers/index.js");
-const { filtrateStatus } = require("../services/readEmail.service.js");
+// const { filtrateStatus } = require("../services/readEmail.service.js");
 
 const router = express.Router();
 
