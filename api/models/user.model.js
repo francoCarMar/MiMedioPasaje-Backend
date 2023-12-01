@@ -31,11 +31,11 @@ const User = sequelize.define(
       allowNull: false,
     },
     usrImgCar: {
-      type: Sequelize.BLOB("medium"),
+      type: Sequelize.STRING,
       allowNull: false,
     },
     usrImgDNI: {
-      type: Sequelize.BLOB("medium"),
+      type: Sequelize.STRING,
       allowNull: false,
     },
     usrValCod: {

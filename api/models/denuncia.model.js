@@ -5,11 +5,10 @@ const Denuncia = sequelize.define(
   "denuncia",
   {
     denCod: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.STRING,
       allowNull: false,
       unique: true,
       primaryKey: true,
-      autoIncrement: true,
     },
     usrDNI: {
       type: Sequelize.STRING,
@@ -45,7 +44,7 @@ const Denuncia = sequelize.define(
       allowNull: true,
     },
     denEst: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.STRING,
       allowNull: false,
       defaultValue: 1,
     },
