@@ -1,6 +1,5 @@
 const express = require("express");
 const { DenunciaController } = require("../controllers/index.js");
-// const { filtrateStatus } = require("../services/readEmail.service.js");
 
 const router = express.Router();
 
@@ -16,14 +15,5 @@ router.post("/denuncias", (req, res) => {
     .then((denuncias) => res.json(denuncias))
     .catch((err) => res.status(500).json(err));
 });
-
-/*
-router.post("/statusDenuncia", (req, res) => {
-  const { usrDNI } = req.body;
-  filtrateStatus(usrDNI)
-    .then((result) => res.json(result))
-    .catch((err) => res.status(500).json(err));
-});
-*/
 
 module.exports = router;
