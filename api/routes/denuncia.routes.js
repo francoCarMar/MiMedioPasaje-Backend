@@ -17,11 +17,13 @@ router.post("/denuncias", (req, res) => {
     .catch((err) => res.status(500).json(err));
 });
 
+/*
 router.post("/statusDenuncia", (req, res) => {
   const { usrDNI } = req.body;
   filtrateStatus(usrDNI)
     .then((result) => res.json(result))
     .catch((err) => res.status(500).json(err));
 });
+*/
 
 module.exports = router;
