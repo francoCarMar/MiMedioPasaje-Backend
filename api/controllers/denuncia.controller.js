@@ -22,7 +22,7 @@ const denunciar = async ({
       denHor,
       denEvi,
     });
-    await sendDenunciaEmail(
+    const { denCod } = await sendDenunciaEmail(
       usrDNI,
       usrNom,
       usrApe,
@@ -32,6 +32,8 @@ const denunciar = async ({
       denHor,
       denEvi
     );
+    newDenuncia.denCod = denCod;
+    newDenuncia.save();
 
     return { message: "denuncia creada", denuncia: newDenuncia };
   } catch (e) {
