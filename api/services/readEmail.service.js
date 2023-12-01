@@ -1,4 +1,5 @@
 const Imap = require("imap");
+const { setDenuncia } = require("../controllers/denuncia.controller");
 require("dotenv").config();
 
 const imap = new Imap({
@@ -46,9 +47,14 @@ const fetchUnreadEmails = (imap, box) => {
     f.once("error", (err) => {
       reject(err);
     });
-    f.once("end", () => {
+    f.once("end", async () => {
       console.log("Last email:", lastEmail);
       console.log("Reply to ID:", replyToId);
+      replyToId = "<" + replyToId + ">";
+      estado = extractStatus(lastEmail);
+      await setDenuncia({ denCod: replyToId, denEst: estado });
+      console.log(extractStatus(lastEmail));
+      console.log(replyToId);
       resolve({ lastEmail, replyToId });
     });
   });
@@ -64,6 +70,16 @@ const startEmailListening = async function () {
     }
   });
   imap.connect();
+};
+
+const extractStatus = (lastEmail) => {
+  const lines = lastEmail.split("\n");
+  for (let line of lines) {
+    if (line.startsWith("Estado:")) {
+      return line.slice(7).trim();
+    }
+  }
+  return "No se pudo obtener el estado";
 };
 
 module.exports = startEmailListening;

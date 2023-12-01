@@ -57,6 +57,7 @@ const setDenuncia = async ({ denCod, denEst }) => {
     );
     return { message: "denuncia actualizada", denuncia: denuncia };
   } catch (e) {
+    console.log(e);
     return { message: "error al actualizar denuncia", error: e };
   }
 };
