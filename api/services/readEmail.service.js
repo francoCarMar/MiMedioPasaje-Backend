@@ -24,39 +24,46 @@ const openInbox = (imap) => {
 
 const fetchUnreadEmails = (imap, box) => {
   return new Promise((resolve, reject) => {
-    const f = imap.seq.fetch("1:*", {
-      bodies: ["HEADER.FIELDS (IN-REPLY-TO)", "1"],
-    });
-    let lastEmail = "";
-    let replyToId = "";
-    f.on("message", (msg, seqno) => {
-      let buffer = "";
-      msg.on("body", (stream, info) => {
-        stream.on("data", (chunk) => {
-          buffer += chunk.toString("utf8");
-        });
-        stream.once("end", () => {
-          lastEmail = buffer;
-          const match = buffer.match(/In-Reply-To: <(.*)>/);
-          if (match) {
-            replyToId = match[1];
-          }
-        });
-      });
-    });
-    f.once("error", (err) => {
-      reject(err);
-    });
-    f.once("end", async () => {
-      console.log("Last email:", lastEmail);
-      console.log("Reply to ID:", replyToId);
-      replyToId = "<" + replyToId + ">";
-      estado = extractStatus(lastEmail);
-      await setDenuncia({ denCod: replyToId, denEst: estado });
-      console.log(extractStatus(lastEmail));
-      console.log(replyToId);
-      resolve({ lastEmail, replyToId });
-    });
+    imap.search(
+      [["FROM", process.env.EMAIL_COMPLAINT]],
+      function (err, results) {
+        if (err) {
+          reject(err);
+        } else {
+          const f = imap.seq.fetch(results, {
+            bodies: ["HEADER.FIELDS (IN-REPLY-TO)", "1"],
+          });
+          let lastEmail = "";
+          let replyToId = "";
+          f.on("message", (msg, seqno) => {
+            let buffer = "";
+            msg.on("body", (stream, info) => {
+              stream.on("data", (chunk) => {
+                buffer += chunk.toString("utf8");
+              });
+              stream.once("end", () => {
+                lastEmail = buffer;
+                const match = buffer.match(/In-Reply-To: <(.*)>/);
+                if (match) {
+                  replyToId = match[1];
+                }
+              });
+            });
+          });
+          f.once("error", (err) => {
+            reject(err);
+          });
+          f.once("end", async () => {
+            console.log("Last email:", lastEmail);
+            console.log("Reply to ID:", replyToId);
+            replyToId = "<" + replyToId + ">";
+            const estado = extractStatus(lastEmail);
+            await setDenuncia({ denCod: replyToId, denEst: estado });
+            resolve({ lastEmail, replyToId });
+          });
+        }
+      }
+    );
   });
 };
 
@@ -79,7 +86,7 @@ const extractStatus = (lastEmail) => {
       return line.slice(7).trim();
     }
   }
-  return "No se pudo obtener el estado";
+  return "Enviado";
 };
 
 module.exports = startEmailListening;
