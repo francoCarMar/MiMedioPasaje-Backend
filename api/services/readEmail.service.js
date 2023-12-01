@@ -12,8 +12,6 @@ const imap = new Imap({
   tlsOptions: { rejectUnauthorized: false },
 });
 
-let lastEmail = "";
-
 const openInbox = (imap) => {
   return new Promise((resolve, reject) => {
     imap.openBox("INBOX", true, (err, box) => {
@@ -25,8 +23,11 @@ const openInbox = (imap) => {
 
 const fetchUnreadEmails = (imap, box) => {
   return new Promise((resolve, reject) => {
-    const f = imap.seq.fetch("1:*", { bodies: ["1"] });
+    const f = imap.seq.fetch("1:*", {
+      bodies: ["HEADER.FIELDS (IN-REPLY-TO)", "1"],
+    });
     let lastEmail = "";
+    let replyToId = "";
     f.on("message", (msg, seqno) => {
       let buffer = "";
       msg.on("body", (stream, info) => {
@@ -35,6 +36,10 @@ const fetchUnreadEmails = (imap, box) => {
         });
         stream.once("end", () => {
           lastEmail = buffer;
+          const match = buffer.match(/In-Reply-To: <(.*)>/);
+          if (match) {
+            replyToId = match[1];
+          }
         });
       });
     });
@@ -42,8 +47,9 @@ const fetchUnreadEmails = (imap, box) => {
       reject(err);
     });
     f.once("end", () => {
-      console.log(lastEmail);
-      resolve(lastEmail);
+      console.log("Last email:", lastEmail);
+      console.log("Reply to ID:", replyToId);
+      resolve({ lastEmail, replyToId });
     });
   });
 };
