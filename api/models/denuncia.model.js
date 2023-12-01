@@ -46,7 +46,7 @@ const Denuncia = sequelize.define(
     denEst: {
       type: Sequelize.STRING,
       allowNull: false,
-      defaultValue: 1,
+      defaultValue: "Enviado",
     },
   },
   {

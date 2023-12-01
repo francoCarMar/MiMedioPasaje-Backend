@@ -49,7 +49,20 @@ const misDenuncias = async ({ usrDNI }) => {
   }
 };
 
+const setDenuncia = async ({ denCod, denEst }) => {
+  try {
+    const denuncia = await Denuncia.update(
+      { denEst: denEst },
+      { where: { denCod: denCod } }
+    );
+    return { message: "denuncia actualizada", denuncia: denuncia };
+  } catch (e) {
+    return { message: "error al actualizar denuncia", error: e };
+  }
+};
+
 module.exports = {
   denunciar,
   misDenuncias,
+  setDenuncia,
 };
