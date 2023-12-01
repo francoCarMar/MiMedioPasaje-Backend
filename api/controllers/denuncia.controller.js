@@ -12,16 +12,6 @@ const denunciar = async ({
   denEvi,
 }) => {
   try {
-    const newDenuncia = await Denuncia.create({
-      usrDNI,
-      usrNom,
-      usrApe,
-      denRazSoc,
-      denMovPla,
-      denFec,
-      denHor,
-      denEvi,
-    });
     const { denCod } = await sendDenunciaEmail(
       usrDNI,
       usrNom,
@@ -32,8 +22,17 @@ const denunciar = async ({
       denHor,
       denEvi
     );
-    newDenuncia.denCod = denCod;
-    newDenuncia.save();
+    const newDenuncia = await Denuncia.create({
+      denCod,
+      usrDNI,
+      usrNom,
+      usrApe,
+      denRazSoc,
+      denMovPla,
+      denFec,
+      denHor,
+      denEvi,
+    });
 
     return { message: "denuncia creada", denuncia: newDenuncia };
   } catch (e) {
