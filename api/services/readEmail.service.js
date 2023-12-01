@@ -54,8 +54,6 @@ const fetchUnreadEmails = (imap, box) => {
             reject(err);
           });
           f.once("end", async () => {
-            console.log("Last email:", lastEmail);
-            console.log("Reply to ID:", replyToId);
             replyToId = "<" + replyToId + ">";
             const estado = extractStatus(lastEmail);
             await setDenuncia({ denCod: replyToId, denEst: estado });
