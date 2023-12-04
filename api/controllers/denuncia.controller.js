@@ -39,9 +39,9 @@ const denunciar = async ({
   }
 };
 
-const misDenuncias = async ({ usrDNI }) => {
+const misDenuncias = async ({ usrEma }) => {
   try {
-    const denuncias = await Denuncia.findAll({ where: { usrDNI: usrDNI } });
+    const denuncias = await Denuncia.findAll({ where: { usrEma: usrEma } });
     return { message: "denuncias encontradas", denuncias: denuncias };
   } catch (e) {
     console.log(e);
