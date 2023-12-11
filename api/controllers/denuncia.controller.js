@@ -49,10 +49,10 @@ const misDenuncias = async ({ usrDNI }) => {
   }
 };
 
-const setDenuncia = async ({ denCod, denEst }) => {
+const setDenuncia = async ({ denCod, denEst, denMsjEst }) => {
   try {
     const denuncia = await Denuncia.update(
-      { denEst: denEst },
+      { denEst: denEst, denMsjEst: denMsjEst },
       { where: { denCod: denCod } }
     );
     return { message: "denuncia actualizada", denuncia: denuncia };

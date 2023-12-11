@@ -13,11 +13,18 @@ const imap = new Imap({
   tlsOptions: { rejectUnauthorized: false },
 });
 
+imap.on("error", function (err) {
+  console.log("IMAP error:", err);
+});
+
 const openInbox = (imap) => {
   return new Promise((resolve, reject) => {
-    imap.openBox("INBOX", true, (err, box) => {
-      if (err) reject(err);
-      else resolve(box);
+    imap.openBox("INBOX", false, (err, box) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(box);
+      }
     });
   });
 };
@@ -25,13 +32,16 @@ const openInbox = (imap) => {
 const fetchUnreadEmails = (imap, box) => {
   return new Promise((resolve, reject) => {
     imap.search(
-      [["FROM", process.env.EMAIL_COMPLAINT]],
+      [["UNSEEN", "FROM", process.env.EMAIL_COMPLAINT]],
       function (err, results) {
         if (err) {
           reject(err);
+        } else if (results.length === 0) {
+          resolve(null);
         } else {
           const f = imap.seq.fetch(results, {
             bodies: ["HEADER.FIELDS (IN-REPLY-TO)", "1"],
+            markSeen: true,
           });
           let lastEmail = "";
           let replyToId = "";
@@ -42,7 +52,7 @@ const fetchUnreadEmails = (imap, box) => {
                 buffer += chunk.toString("utf8");
               });
               stream.once("end", () => {
-                lastEmail = buffer;
+                lastEmail = extractEmailBody(buffer);
                 const match = buffer.match(/In-Reply-To: <(.*)>/);
                 if (match) {
                   replyToId = match[1];
@@ -56,7 +66,12 @@ const fetchUnreadEmails = (imap, box) => {
           f.once("end", async () => {
             replyToId = "<" + replyToId + ">";
             const estado = extractStatus(lastEmail);
-            await setDenuncia({ denCod: replyToId, denEst: estado });
+            console.log(lastEmail);
+            await setDenuncia({
+              denCod: replyToId,
+              denEst: estado,
+              denMsjEst: lastEmail,
+            });
             resolve({ lastEmail, replyToId });
           });
         }
@@ -90,5 +105,11 @@ const extractStatus = (lastEmail) => {
   }
   return "Enviado";
 };
+function extractEmailBody(buffer) {
+  const match = buffer.match(
+    /In-Reply-To: <.*>([\s\S]*?)El \w+, \d+ \w+ \d+ a las \d+:\d+, <\w+@\w+\.\w+> escribi/
+  );
+  return match ? match[1].trim() : "";
+}
 
 module.exports = startEmailListening;
