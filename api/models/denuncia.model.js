@@ -48,6 +48,10 @@ const Denuncia = sequelize.define(
       allowNull: false,
       defaultValue: "Enviado",
     },
+    denMsjEst: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
   },
   {
     tableName: "denuncia",

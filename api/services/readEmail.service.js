@@ -72,10 +72,14 @@ const startEmailListening = async function () {
       await fetchUnreadEmails(imap, box);
     } catch (error) {
       console.error(error);
+    } finally {
+      imap.end();
     }
   });
   imap.connect();
 };
+
+setInterval(startEmailListening, 20000);
 
 const extractStatus = (lastEmail) => {
   const lines = lastEmail.split("\n");
